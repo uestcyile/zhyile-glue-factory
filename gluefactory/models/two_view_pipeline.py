@@ -11,6 +11,9 @@ that corresponds to the keypoint i in image 0. m0[i] = -1 if i is unmatched.
 """
 
 from omegaconf import OmegaConf
+import cv2
+import torch
+import numpy as np
 
 from . import get_model
 from .base_model import BaseModel
@@ -72,6 +75,22 @@ class TwoViewPipeline(BaseModel):
     def _forward(self, data):
         pred0 = self.extract_view(data, "0")
         pred1 = self.extract_view(data, "1")
+        # debug
+        debug = False
+        if debug:
+            image0 = data['view0']['image'][0, :] # get the first image
+            image0 = image0.permute(1, 2, 0).contiguous() # CxHxW --> HxWxC
+            image0 = image0.cpu().numpy() # cuda to cpu to numpy
+            image0 = image0[..., ::-1] # RGB --> BGR
+            image0 = np.uint8(255 * image0) 
+            keypoints0 = pred0['keypoints'].cpu().numpy()[0, :]
+            for i in range(len(keypoints0)):
+                kp = keypoints0[i]
+                x = int(kp[0])
+                y = int(kp[1])
+                cv2.circle(image0, (x, y), 2, (0, 255, 0), 1)
+            cv2.imwrite("/home/data/Downloads/test1130/image0.jpg", image0)
+
         pred = {
             **{k + "0": v for k, v in pred0.items()},
             **{k + "1": v for k, v in pred1.items()},

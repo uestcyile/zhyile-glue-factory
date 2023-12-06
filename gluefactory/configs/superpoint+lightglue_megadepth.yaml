@@ -13,10 +13,10 @@ data:
     num_overlap_bins: 3
     read_depth: true
     read_image: true
-    batch_size: 32
-    num_workers: 14
+    batch_size: 6
+    num_workers: 6
     load_features:
-        do: false  # enable this if you have cached predictions
+        do: true  # enable this if you have cached predictions
         path: exports/megadepth-undist-depth-r1024_SP-k2048-nms3/{scene}.h5
         padding_length: 2048
         padding_fn: pad_local_features
@@ -52,7 +52,8 @@ train:
         on_epoch: true
         exp_div_10: 10
     dataset_callback_fn: sample_new_items
-    plot: [5, 'gluefactory.visualization.visualize_batch.make_match_figures']
+    plot: [8, 'gluefactory.visualization.visualize_batch.make_match_figures']
+    load_experiment: sp+lg_homography
 benchmarks:
     megadepth1500:
         data:

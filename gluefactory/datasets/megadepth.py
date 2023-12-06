@@ -82,8 +82,8 @@ class MegaDepth(BaseDataset):
     def download(self):
         data_dir = DATA_PATH / self.conf.data_dir
         tmp_dir = data_dir.parent / "megadepth_tmp"
-        if tmp_dir.exists():  # The previous download failed.
-            shutil.rmtree(tmp_dir)
+        # if tmp_dir.exists():  # The previous download failed.
+        #     shutil.rmtree(tmp_dir)
         tmp_dir.mkdir(exist_ok=True, parents=True)
         url_base = "https://cvg-data.inf.ethz.ch/megadepth/"
         for tar_name, out_name in (
@@ -95,7 +95,7 @@ class MegaDepth(BaseDataset):
             torch.hub.download_url_to_file(url_base + tar_name, tar_path)
             with tarfile.open(tar_path) as tar:
                 tar.extractall(path=tmp_dir)
-            tar_path.unlink()
+            # tar_path.unlink()
             shutil.move(tmp_dir / tar_name.split(".")[0], tmp_dir / out_name)
         shutil.move(tmp_dir, data_dir)
 

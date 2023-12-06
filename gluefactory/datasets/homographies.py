@@ -109,9 +109,9 @@ class HomographyDataset(BaseDataset):
             if not image_list.exists():
                 raise FileNotFoundError(f"Cannot find image list {image_list}.")
             images = image_list.read_text().rstrip("\n").split("\n")
-            for image in images:
-                if not (image_dir / image).exists():
-                    raise FileNotFoundError(image_dir / image)
+            # for image in images:
+            #     if not (image_dir / image).exists():
+            #         raise FileNotFoundError(image_dir / image)
             logger.info("Found %d images in list file.", len(images))
         elif isinstance(conf.image_list, omegaconf.listconfig.ListConfig):
             images = conf.image_list.to_container()
@@ -130,8 +130,8 @@ class HomographyDataset(BaseDataset):
     def download_revisitop1m(self):
         data_dir = DATA_PATH / self.conf.data_dir
         tmp_dir = data_dir.parent / "revisitop1m_tmp"
-        if tmp_dir.exists():  # The previous download failed.
-            shutil.rmtree(tmp_dir)
+        # if tmp_dir.exists():  # The previous download failed.
+        #     shutil.rmtree(tmp_dir)
         image_dir = tmp_dir / self.conf.image_dir
         image_dir.mkdir(exist_ok=True, parents=True)
         num_files = 100
@@ -144,7 +144,7 @@ class HomographyDataset(BaseDataset):
             torch.hub.download_url_to_file(url_base + "jpg/" + tar_name, tar_path)
             with tarfile.open(tar_path) as tar:
                 tar.extractall(path=image_dir)
-            tar_path.unlink()
+            # tar_path.unlink()
         shutil.move(tmp_dir, data_dir)
 
     def get_dataset(self, split):
